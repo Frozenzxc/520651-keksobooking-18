@@ -14,10 +14,7 @@ var MOCK = {
 
   offer: {
     title: 'Заголовок №',
-    address: {
-      x: location.x,
-      y: location.y
-    },
+    address: '',
     price: {
       min: 100,
       max: 5000
@@ -41,7 +38,7 @@ var MOCK = {
   location: {
     x: {
       min: 25,
-      max: mapWidth
+      max: 1000
     },
     y: {
       min: 130,
@@ -51,8 +48,7 @@ var MOCK = {
 };
 
 function randomInt(min, max) {
-  var rand = min + Math.random() * (max + 1 - min);
-  return Math.floor(rand);
+  return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
 function randomElm(arr) {
@@ -77,7 +73,7 @@ var generateData = function () {
       },
       offer: {
         title: MOCK.offer.title + (i + 1),
-        address: '' + randomInt(MOCK.location.x.min, MOCK.location.x.max) + ', ' + randomInt(MOCK.location.y.min, MOCK.location.y.max),
+        address: '' + randomInt(MOCK.location.x.min, mapWidth) + ', ' + randomInt(MOCK.location.y.min, MOCK.location.y.max),
         price: randomInt(MOCK.offer.price.min, MOCK.offer.price.max),
         type: randomElm(MOCK.offer.type),
         rooms: randomInt(MOCK.offer.rooms.min, MOCK.offer.rooms.max),
@@ -89,19 +85,25 @@ var generateData = function () {
         photos: randomArr(MOCK.offer.photos)
       },
       location: {
-        x: randomInt(MOCK.location.x.min, MOCK.location.x.max),
+        x: randomInt(MOCK.location.x.min, (mapWidth - 25)),
         y: randomInt(MOCK.location.y.min, MOCK.location.y.max)
       }
     };
-
-    var element = template.cloneNode(true);
-    element.style.left = '' + (arr[i].location.x - 25) + 'px';
-    element.style.top = '' + (arr[i].location.y - 70) + 'px';
-    element.children[0].src = arr[i].author.avatar;
-    element.children[0].alt = arr[i].offer.title;
-    pins.appendChild(element);
   }
   return arr;
 };
 
-generateData();
+var templates = generateData();
+
+function renderPin(obj) {
+  var element = template.cloneNode(true);
+  element.style.left = '' + (obj.location.x - 25) + 'px';
+  element.style.top = '' + (obj.location.y - 70) + 'px';
+  element.children[0].src = obj.author.avatar;
+  element.children[0].alt = obj.offer.title;
+  pins.appendChild(element);
+}
+
+for (var i = 0; i < templates.length; i++) {
+  renderPin(templates[i]);
+}
