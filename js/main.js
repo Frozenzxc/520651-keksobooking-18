@@ -98,7 +98,7 @@ var generateData = function () {
   return arr;
 };
 
-var templates = generateData();
+var hotelData = generateData();
 
 function renderPin(obj) {
   var element = template.cloneNode(true);
@@ -113,6 +113,11 @@ function renderCard(obj) {
   var element = cardTemplate.cloneNode(true);
   var photosList = element.querySelector('.popup__photos');
   var photo = element.querySelector('.popup__photo');
+  var features = element.querySelector('.popup__features');
+  while (features.firstChild) {
+    features.removeChild(features.firstChild);
+  }
+
   element.querySelector('.popup__title').textContent = obj.offer.title;
   element.querySelector('.popup__text--address').textContent = obj.offer.address;
   element.querySelector('.popup__text--price').textContent = obj.offer.price + '₽/ночь';
@@ -121,7 +126,9 @@ function renderCard(obj) {
   element.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
 
   for (var i = 0; i < obj.offer.features.length; i++) {
-    element.querySelector('.popup__features').children[i].textContent = obj.offer.features[i];
+    var feature = document.createElement('li');
+    feature.classList.add('popup__feature', 'popup__feature--' + obj.offer.features[i]);
+    features.appendChild(feature);
   }
 
   element.querySelector('.popup__description').textContent = obj.offer.description;
@@ -137,9 +144,9 @@ function renderCard(obj) {
   cardFragment.appendChild(element);
 }
 
-for (var i = 0; i < templates.length; i++) {
-  renderPin(templates[i]);
-  renderCard(templates[i]);
+for (var i = 0; i < hotelData.length; i++) {
+  renderPin(hotelData[i]);
+  renderCard(hotelData[i]);
 }
 
 pins.appendChild(fragment);
