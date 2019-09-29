@@ -1,8 +1,13 @@
 'use strict';
 
+var PIN_COUNT = 8;
+var TYPE_TRANSLATE = ['Квартира', 'Бунгало', 'Дом', 'Дворец'];
 var mapWidth = document.querySelector('.map').offsetWidth;
 var pins = document.querySelector('.map__pins');
 var template = document.querySelector('#pin').content.querySelector('button');
+var fragment = document.createDocumentFragment();
+var cardTemplate = document.querySelector('#card').content.querySelector('article');
+var cardFragment = document.createDocumentFragment();
 
 var MOCK = {
   author: {
@@ -52,11 +57,11 @@ function randomInt(min, max) {
 }
 
 function randomElm(arr) {
-  return Math.floor(Math.random() * arr.length);
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function randomArr(data) {
-  var count = randomInt(0, data.length - 1);
+  var count = randomInt(1, data.length);
   var result = [];
   for (var i = 0; i < count; i++) {
     result[i] = data[i];
@@ -66,7 +71,7 @@ function randomArr(data) {
 
 var generateData = function () {
   var arr = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < PIN_COUNT; i++) {
     arr[i] = {
       author: {
         avatar: MOCK.author.avatar.path + (i + 1) + MOCK.author.avatar.extension
@@ -93,7 +98,7 @@ var generateData = function () {
   return arr;
 };
 
-var templates = generateData();
+var hotelData = generateData();
 
 function renderPin(obj) {
   var element = template.cloneNode(true);
@@ -101,9 +106,48 @@ function renderPin(obj) {
   element.style.top = '' + (obj.location.y - 70) + 'px';
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
-  pins.appendChild(element);
+  fragment.appendChild(element);
 }
 
-for (var i = 0; i < templates.length; i++) {
-  renderPin(templates[i]);
+function renderCard(obj) {
+  var element = cardTemplate.cloneNode(true);
+  var photosList = element.querySelector('.popup__photos');
+  var photo = element.querySelector('.popup__photo');
+  var features = element.querySelector('.popup__features');
+  while (features.firstChild) {
+    features.removeChild(features.firstChild);
+  }
+
+  element.querySelector('.popup__title').textContent = obj.offer.title;
+  element.querySelector('.popup__text--address').textContent = obj.offer.address;
+  element.querySelector('.popup__text--price').textContent = obj.offer.price + '₽/ночь';
+  element.querySelector('.popup__type').textContent = TYPE_TRANSLATE[MOCK.offer.type.indexOf(obj.offer.type)];
+  element.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.rooms + ' гостей';
+  element.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
+
+  for (var i = 0; i < obj.offer.features.length; i++) {
+    var feature = document.createElement('li');
+    feature.classList.add('popup__feature', 'popup__feature--' + obj.offer.features[i]);
+    features.appendChild(feature);
+  }
+
+  element.querySelector('.popup__description').textContent = obj.offer.description;
+
+  photosList.removeChild(photosList.children[0]);
+  for (var j = 0; j < obj.offer.photos.length; j++) {
+    var elm = photo.cloneNode(true);
+    elm.src = obj.offer.photos[j];
+    photosList.appendChild(elm);
+  }
+
+  element.querySelector('.popup__avatar').src = obj.author.avatar;
+  cardFragment.appendChild(element);
 }
+
+for (var i = 0; i < hotelData.length; i++) {
+  renderPin(hotelData[i]);
+  renderCard(hotelData[i]);
+}
+
+pins.appendChild(fragment);
+pins.appendChild(cardFragment);
