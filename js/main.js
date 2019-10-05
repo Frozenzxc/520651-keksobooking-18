@@ -151,19 +151,17 @@ function renderCard(obj) {
   cardFragment.appendChild(element);
 }
 
-for (var i = 0; i < hotelData.length; i++) {
-  renderPin(hotelData[i]);
-  renderCard(hotelData[i]);
-}
-
-pins.appendChild(fragment);
-pins.appendChild(cardFragment);
-
 function activatePage() {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   activateForm(filterForm);
   activateForm(adForm);
+  for (var i = 0; i < hotelData.length; i++) {
+    renderPin(hotelData[i]);
+    renderCard(hotelData[i]);
+  }
+  pins.appendChild(fragment);
+  pins.appendChild(cardFragment);
 }
 
 function activateForm(form) {
