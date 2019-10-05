@@ -1,6 +1,5 @@
 'use strict';
 
-var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var PIN_COUNT = 8;
 var PIN_WIDTH = 50;
