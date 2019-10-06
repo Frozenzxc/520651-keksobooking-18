@@ -1,13 +1,22 @@
 'use strict';
 
+var ENTER_KEYCODE = 13;
 var PIN_COUNT = 8;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var MAINPIN_DIAMETER = 100;
 var TYPE_TRANSLATE = ['Квартира', 'Бунгало', 'Дом', 'Дворец'];
-var mapWidth = document.querySelector('.map').offsetWidth;
+var map = document.querySelector('.map');
+var mapWidth = map.offsetWidth;
 var pins = document.querySelector('.map__pins');
 var template = document.querySelector('#pin').content.querySelector('button');
 var fragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('#card').content.querySelector('article');
 var cardFragment = document.createDocumentFragment();
+var mainPin = document.querySelector('.map__pin--main');
+var filterForm = document.querySelector('.map__filters');
+var adForm = document.querySelector('.ad-form');
+var addressField = document.querySelector('#address');
 
 var MOCK = {
   author: {
@@ -42,7 +51,7 @@ var MOCK = {
 
   location: {
     x: {
-      min: 25,
+      min: 0,
       max: 1000
     },
     y: {
@@ -90,7 +99,7 @@ var generateData = function () {
         photos: randomArr(MOCK.offer.photos)
       },
       location: {
-        x: randomInt(MOCK.location.x.min, (mapWidth - 25)),
+        x: randomInt(MOCK.location.x.min, (mapWidth)),
         y: randomInt(MOCK.location.y.min, MOCK.location.y.max)
       }
     };
@@ -102,8 +111,8 @@ var hotelData = generateData();
 
 function renderPin(obj) {
   var element = template.cloneNode(true);
-  element.style.left = '' + (obj.location.x - 25) + 'px';
-  element.style.top = '' + (obj.location.y - 70) + 'px';
+  element.style.left = '' + (obj.location.x + PIN_WIDTH / 2) + 'px';
+  element.style.top = '' + (obj.location.y + PIN_HEIGHT) + 'px';
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
   fragment.appendChild(element);
@@ -114,9 +123,7 @@ function renderCard(obj) {
   var photosList = element.querySelector('.popup__photos');
   var photo = element.querySelector('.popup__photo');
   var features = element.querySelector('.popup__features');
-  while (features.firstChild) {
-    features.removeChild(features.firstChild);
-  }
+  features.innerHTML = '';
 
   element.querySelector('.popup__title').textContent = obj.offer.title;
   element.querySelector('.popup__text--address').textContent = obj.offer.address;
@@ -144,10 +151,78 @@ function renderCard(obj) {
   cardFragment.appendChild(element);
 }
 
-for (var i = 0; i < hotelData.length; i++) {
-  renderPin(hotelData[i]);
-  renderCard(hotelData[i]);
+function activatePage() {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  activateForm(filterForm);
+  activateForm(adForm);
+  for (var i = 0; i < hotelData.length; i++) {
+    renderPin(hotelData[i]);
+    renderCard(hotelData[i]);
+  }
+  pins.appendChild(fragment);
+  pins.appendChild(cardFragment);
 }
 
-pins.appendChild(fragment);
-pins.appendChild(cardFragment);
+function activateForm(form) {
+  var selects = form.getElementsByTagName('select');
+  var fieldsets = form.getElementsByTagName('fieldset');
+
+  if (selects) {
+    for (var j = 0; j < selects.length; j++) {
+      selects[j].disabled = false;
+    }
+  }
+
+  if (fieldsets) {
+    for (var k = 0; k < fieldsets.length; k++) {
+      fieldsets[k].disabled = false;
+    }
+  }
+}
+
+addressField.value = '' + (mainPin.offsetLeft + MAINPIN_DIAMETER / 2) + ', ' + (mainPin.offsetTop + MAINPIN_DIAMETER / 2);
+
+mainPin.addEventListener('mousedown', function () {
+  activatePage();
+  addressField.value = '' + (mainPin.offsetLeft + PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activatePage();
+  }
+});
+
+var room = document.querySelector('#room_number');
+var guest = document.querySelector('#capacity');
+var guests = guest.getElementsByTagName('option');
+
+function disableOptions(arr, index, flag) {
+  arr[3].disabled = !flag;
+  for (var z = 0; z < arr.length; z++) {
+    if (arr[z].value > index) {
+      arr[z].disabled = true;
+    }
+  }
+}
+
+room.addEventListener('change', function () {
+  for (var x = 0; x < guests.length; x++) {
+    guests[x].disabled = false;
+  }
+  switch (+room.value) {
+    case 1:
+      disableOptions(guests, 1);
+      break;
+    case 2:
+      disableOptions(guests, 2);
+      break;
+    case 3:
+      disableOptions(guests, 3);
+      break;
+    default:
+      disableOptions(guests, 0, true);
+      break;
+  }
+});
