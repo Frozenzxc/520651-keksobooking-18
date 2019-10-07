@@ -1,5 +1,6 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var PIN_COUNT = 8;
 var PIN_WIDTH = 50;
@@ -116,6 +117,20 @@ function renderPin(obj) {
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
   fragment.appendChild(element);
+
+  element.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    renderCard(obj);
+    pins.appendChild(cardFragment);
+  });
+
+  element.addEventListener('keydown', function (evt) {
+    evt.preventDefault();
+    if (evt.keyCode === ENTER_KEYCODE) {
+      renderCard(obj);
+      pins.appendChild(cardFragment);
+    }
+  });
 }
 
 function renderCard(obj) {
@@ -148,7 +163,22 @@ function renderCard(obj) {
   }
 
   element.querySelector('.popup__avatar').src = obj.author.avatar;
+
+  var cardCloseBtn = element.querySelector('.popup__close');
+  cardCloseBtn.addEventListener('click', cardCloseHandler);
+  map.addEventListener('keydown', function (evt) {
+    if (element && evt.keyCode === ESC_KEYCODE) {
+      cardCloseHandler(evt);
+    }
+  });
+
   cardFragment.appendChild(element);
+}
+
+function cardCloseHandler(evt) {
+  evt.preventDefault();
+  var elm = pins.querySelector('.map__card');
+  pins.removeChild(elm);
 }
 
 function activatePage() {
@@ -158,10 +188,9 @@ function activatePage() {
   activateForm(adForm);
   for (var i = 0; i < hotelData.length; i++) {
     renderPin(hotelData[i]);
-    renderCard(hotelData[i]);
   }
   pins.appendChild(fragment);
-  pins.appendChild(cardFragment);
+
 }
 
 function activateForm(form) {
@@ -225,4 +254,39 @@ room.addEventListener('change', function () {
       disableOptions(guests, 0, true);
       break;
   }
+});
+
+var hotelType = document.querySelector('#type');
+var hotelPrice = document.querySelector('#price');
+
+hotelType.addEventListener('change', function () {
+  switch (hotelType.value) {
+    case 'bungalo':
+      hotelPrice.min = 0;
+      hotelPrice.placeholder = 0;
+      break;
+    case 'flat':
+      hotelPrice.min = 1000;
+      hotelPrice.placeholder = 1000;
+      break;
+    case 'house':
+      hotelPrice.min = 5000;
+      hotelPrice.placeholder = 5000;
+      break;
+    default:
+      hotelPrice.min = 10000;
+      hotelPrice.placeholder = 10000;
+      break;
+  }
+});
+
+var checkinTime = document.querySelector('#timein');
+var checkoutTime = document.querySelector('#timeout');
+
+checkinTime.addEventListener('change', function () {
+  checkoutTime.value = checkinTime.value;
+});
+
+checkoutTime.addEventListener('change', function () {
+  checkinTime.value = checkoutTime.value;
 });
