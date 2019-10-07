@@ -116,6 +116,7 @@ function renderPin(obj) {
   element.style.top = '' + (obj.location.y + PIN_HEIGHT) + 'px';
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
+  element.tabIndex = 0;
   fragment.appendChild(element);
 
   element.addEventListener('click', function (evt) {
