@@ -11,9 +11,7 @@ var map = document.querySelector('.map');
 var mapWidth = map.offsetWidth;
 var pins = document.querySelector('.map__pins');
 var template = document.querySelector('#pin').content.querySelector('button');
-var fragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('#card').content.querySelector('article');
-var cardFragment = document.createDocumentFragment();
 var mainPin = document.querySelector('.map__pin--main');
 var filterForm = document.querySelector('.map__filters');
 var adForm = document.querySelector('.ad-form');
@@ -117,21 +115,19 @@ function renderPin(obj) {
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
   element.tabIndex = 0;
-  fragment.appendChild(element);
 
-  element.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    renderCard(obj);
-    pins.appendChild(cardFragment);
+  element.addEventListener('click', function () {
+    cardCloseHandler();
+    pins.appendChild(renderCard(obj));
   });
 
   element.addEventListener('keydown', function (evt) {
-    evt.preventDefault();
     if (evt.keyCode === ENTER_KEYCODE) {
-      renderCard(obj);
-      pins.appendChild(cardFragment);
+      cardCloseHandler();
+      pins.appendChild(renderCard(obj));
     }
   });
+  return element;
 }
 
 function renderCard(obj) {
@@ -169,17 +165,17 @@ function renderCard(obj) {
   cardCloseBtn.addEventListener('click', cardCloseHandler);
   map.addEventListener('keydown', function (evt) {
     if (element && evt.keyCode === ESC_KEYCODE) {
-      cardCloseHandler(evt);
+      cardCloseHandler();
     }
   });
-
-  cardFragment.appendChild(element);
+  return element;
 }
 
-function cardCloseHandler(evt) {
-  evt.preventDefault();
+function cardCloseHandler() {
   var elm = pins.querySelector('.map__card');
-  pins.removeChild(elm);
+  if (elm) {
+    pins.removeChild(elm);
+  }
 }
 
 function activatePage() {
@@ -187,11 +183,9 @@ function activatePage() {
   adForm.classList.remove('ad-form--disabled');
   activateForm(filterForm);
   activateForm(adForm);
-  for (var i = 0; i < hotelData.length; i++) {
-    renderPin(hotelData[i]);
-  }
-  pins.appendChild(fragment);
-
+  hotelData.forEach(function (item) {
+    pins.appendChild(renderPin(item));
+  });
 }
 
 function activateForm(form) {
