@@ -189,19 +189,19 @@ function activatePage() {
 }
 
 function activateForm(form) {
-  var selects = form.getElementsByTagName('select');
-  var fieldsets = form.getElementsByTagName('fieldset');
+  var selects = form.querySelectorAll('select');
+  var fieldsets = form.querySelectorAll('fieldset');
 
   if (selects) {
-    for (var j = 0; j < selects.length; j++) {
-      selects[j].disabled = false;
-    }
+    selects.forEach(function (item) {
+      item.disabled = false;
+    });
   }
 
   if (fieldsets) {
-    for (var k = 0; k < fieldsets.length; k++) {
-      fieldsets[k].disabled = false;
-    }
+    fieldsets.forEach(function (item) {
+      item.disabled = false;
+    });
   }
 }
 
@@ -220,60 +220,55 @@ mainPin.addEventListener('keydown', function (evt) {
 
 var room = document.querySelector('#room_number');
 var guest = document.querySelector('#capacity');
-var guests = guest.getElementsByTagName('option');
+var guestElements = guest.querySelectorAll('option');
 
-function disableOptions(arr, index, flag) {
-  arr[3].disabled = !flag;
-  for (var z = 0; z < arr.length; z++) {
-    if (arr[z].value > index) {
-      arr[z].disabled = true;
-    }
+var roomsValue = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0]
+};
+
+function disableOptions(evt) {
+  var value = room.value;
+  if (evt) {
+    value = evt.target.value;
   }
+  guestElements.forEach(function (item) {
+    item.disabled = true;
+  });
+  roomsValue[value].forEach(function (item) {
+    guestElements.forEach(function (itemValue) {
+      if (+itemValue.value === item) {
+        itemValue.disabled = false;
+        itemValue.selected = true;
+      }
+    });
+  });
 }
 
-room.addEventListener('change', function () {
-  for (var x = 0; x < guests.length; x++) {
-    guests[x].disabled = false;
-  }
-  switch (+room.value) {
-    case 1:
-      disableOptions(guests, 1);
-      break;
-    case 2:
-      disableOptions(guests, 2);
-      break;
-    case 3:
-      disableOptions(guests, 3);
-      break;
-    default:
-      disableOptions(guests, 0, true);
-      break;
-  }
-});
+disableOptions();
+
+room.addEventListener('change', disableOptions);
 
 var hotelType = document.querySelector('#type');
 var hotelPrice = document.querySelector('#price');
 
-hotelType.addEventListener('change', function () {
-  switch (hotelType.value) {
-    case 'bungalo':
-      hotelPrice.min = 0;
-      hotelPrice.placeholder = 0;
-      break;
-    case 'flat':
-      hotelPrice.min = 1000;
-      hotelPrice.placeholder = 1000;
-      break;
-    case 'house':
-      hotelPrice.min = 5000;
-      hotelPrice.placeholder = 5000;
-      break;
-    default:
-      hotelPrice.min = 10000;
-      hotelPrice.placeholder = 10000;
-      break;
-  }
-});
+var hotelValues = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
+function onChangeHotelType() {
+  hotelPrice.min = hotelValues[hotelType.value];
+  hotelPrice.placeholder = hotelValues[hotelType.value];
+}
+
+onChangeHotelType();
+
+hotelType.addEventListener('change', onChangeHotelType);
 
 var checkinTime = document.querySelector('#timein');
 var checkoutTime = document.querySelector('#timeout');
