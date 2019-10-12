@@ -1,5 +1,6 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var PIN_COUNT = 8;
 var PIN_WIDTH = 50;
@@ -10,9 +11,7 @@ var map = document.querySelector('.map');
 var mapWidth = map.offsetWidth;
 var pins = document.querySelector('.map__pins');
 var template = document.querySelector('#pin').content.querySelector('button');
-var fragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('#card').content.querySelector('article');
-var cardFragment = document.createDocumentFragment();
 var mainPin = document.querySelector('.map__pin--main');
 var filterForm = document.querySelector('.map__filters');
 var adForm = document.querySelector('.ad-form');
@@ -115,7 +114,20 @@ function renderPin(obj) {
   element.style.top = '' + (obj.location.y + PIN_HEIGHT) + 'px';
   element.children[0].src = obj.author.avatar;
   element.children[0].alt = obj.offer.title;
-  fragment.appendChild(element);
+  element.tabIndex = 0;
+
+  element.addEventListener('click', function () {
+    cardCloseHandler();
+    pins.appendChild(renderCard(obj));
+  });
+
+  element.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      cardCloseHandler();
+      pins.appendChild(renderCard(obj));
+    }
+  });
+  return element;
 }
 
 function renderCard(obj) {
@@ -148,7 +160,22 @@ function renderCard(obj) {
   }
 
   element.querySelector('.popup__avatar').src = obj.author.avatar;
-  cardFragment.appendChild(element);
+
+  var cardCloseBtn = element.querySelector('.popup__close');
+  cardCloseBtn.addEventListener('click', cardCloseHandler);
+  map.addEventListener('keydown', function (evt) {
+    if (element && evt.keyCode === ESC_KEYCODE) {
+      cardCloseHandler();
+    }
+  });
+  return element;
+}
+
+function cardCloseHandler() {
+  var elm = pins.querySelector('.map__card');
+  if (elm) {
+    pins.removeChild(elm);
+  }
 }
 
 function activatePage() {
@@ -156,28 +183,25 @@ function activatePage() {
   adForm.classList.remove('ad-form--disabled');
   activateForm(filterForm);
   activateForm(adForm);
-  for (var i = 0; i < hotelData.length; i++) {
-    renderPin(hotelData[i]);
-    renderCard(hotelData[i]);
-  }
-  pins.appendChild(fragment);
-  pins.appendChild(cardFragment);
+  hotelData.forEach(function (item) {
+    pins.appendChild(renderPin(item));
+  });
 }
 
 function activateForm(form) {
-  var selects = form.getElementsByTagName('select');
-  var fieldsets = form.getElementsByTagName('fieldset');
+  var selects = form.querySelectorAll('select');
+  var fieldsets = form.querySelectorAll('fieldset');
 
   if (selects) {
-    for (var j = 0; j < selects.length; j++) {
-      selects[j].disabled = false;
-    }
+    selects.forEach(function (item) {
+      item.disabled = false;
+    });
   }
 
   if (fieldsets) {
-    for (var k = 0; k < fieldsets.length; k++) {
-      fieldsets[k].disabled = false;
-    }
+    fieldsets.forEach(function (item) {
+      item.disabled = false;
+    });
   }
 }
 
@@ -196,33 +220,63 @@ mainPin.addEventListener('keydown', function (evt) {
 
 var room = document.querySelector('#room_number');
 var guest = document.querySelector('#capacity');
-var guests = guest.getElementsByTagName('option');
+var guestElements = guest.querySelectorAll('option');
 
-function disableOptions(arr, index, flag) {
-  arr[3].disabled = !flag;
-  for (var z = 0; z < arr.length; z++) {
-    if (arr[z].value > index) {
-      arr[z].disabled = true;
-    }
+var roomsValue = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0]
+};
+
+function disableOptions(evt) {
+  var value = room.value;
+  if (evt) {
+    value = evt.target.value;
   }
+  guestElements.forEach(function (item) {
+    item.disabled = true;
+  });
+  roomsValue[value].forEach(function (item) {
+    guestElements.forEach(function (itemValue) {
+      if (+itemValue.value === item) {
+        itemValue.disabled = false;
+        itemValue.selected = true;
+      }
+    });
+  });
 }
 
-room.addEventListener('change', function () {
-  for (var x = 0; x < guests.length; x++) {
-    guests[x].disabled = false;
-  }
-  switch (+room.value) {
-    case 1:
-      disableOptions(guests, 1);
-      break;
-    case 2:
-      disableOptions(guests, 2);
-      break;
-    case 3:
-      disableOptions(guests, 3);
-      break;
-    default:
-      disableOptions(guests, 0, true);
-      break;
-  }
+disableOptions();
+
+room.addEventListener('change', disableOptions);
+
+var hotelType = document.querySelector('#type');
+var hotelPrice = document.querySelector('#price');
+
+var hotelValues = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
+function onChangeHotelType() {
+  hotelPrice.min = hotelValues[hotelType.value];
+  hotelPrice.placeholder = hotelValues[hotelType.value];
+}
+
+onChangeHotelType();
+
+hotelType.addEventListener('change', onChangeHotelType);
+
+var checkinTime = document.querySelector('#timein');
+var checkoutTime = document.querySelector('#timeout');
+
+checkinTime.addEventListener('change', function () {
+  checkoutTime.value = checkinTime.value;
+});
+
+checkoutTime.addEventListener('change', function () {
+  checkinTime.value = checkoutTime.value;
 });
