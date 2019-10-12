@@ -12,10 +12,10 @@
   window.activatePage = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    window.activateForm(filterForm);
-    window.activateForm(adForm);
+    window.form.activateForm(filterForm);
+    window.form.activateForm(adForm);
     window.hotelData.forEach(function (item) {
-      pins.appendChild(window.renderPin(item));
+      pins.appendChild(window.pin.renderPin(item));
     });
   };
 

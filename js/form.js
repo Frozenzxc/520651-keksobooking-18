@@ -21,7 +21,7 @@
     palace: 10000
   };
 
-  window.activateForm = function (form) {
+  function activateForm(form) {
     var selects = form.querySelectorAll('select');
     var fieldsets = form.querySelectorAll('fieldset');
 
@@ -36,7 +36,7 @@
         item.disabled = false;
       });
     }
-  };
+  }
 
   function disableOptions(evt) {
     var value = room.value;
@@ -76,4 +76,8 @@
   checkoutTime.addEventListener('change', function () {
     checkinTime.value = checkoutTime.value;
   });
+
+  window.form = {
+    activateForm: activateForm
+  };
 })();

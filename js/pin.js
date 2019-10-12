@@ -4,7 +4,7 @@
   var pins = document.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('button');
 
-  window.renderPin = function (obj) {
+  function renderPin(obj) {
     var element = template.cloneNode(true);
     element.style.left = '' + (obj.location.x + window.util.PIN_WIDTH / 2) + 'px';
     element.style.top = '' + (obj.location.y + window.util.PIN_HEIGHT) + 'px';
@@ -24,5 +24,9 @@
       }
     });
     return element;
+  }
+
+  window.pin = {
+    renderPin: renderPin
   };
 })();
