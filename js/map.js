@@ -8,6 +8,13 @@
   var MAINPIN_DIAMETER = 100;
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
+  var mapWidth = map.offsetWidth;
+  var limits = {
+    top: 130,
+    right: mapWidth,
+    bottom: 600,
+    left: 0
+  };
 
   window.activatePage = function () {
     map.classList.remove('map--faded');
@@ -32,19 +39,16 @@
     }
   });
 
+  function setAddressField() {
+    addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
+  }
+
   function dragPin(evt) {
-    evt.preventDefault();
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
     };
-
-    var dragged = false;
-
     function onMouseMove(moveEvt) {
-      moveEvt.preventDefault();
-      dragged = true;
-
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -55,23 +59,30 @@
         y: moveEvt.clientY
       };
 
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      var newCoords = {
+        x: mainPin.offsetLeft - shift.x,
+        y: mainPin.offsetTop - shift.y
+      };
+      if (newCoords.x > limits.right) {
+        newCoords.x = limits.right;
+      } else if (newCoords < limits.left) {
+        newCoords.x = limits.left;
+      }
+      if (newCoords.y < limits.top) {
+        newCoords.y = limits.top;
+      } else if (newCoords.y > limits.bottom) {
+        newCoords.y = limits.bottom;
+      }
 
+      mainPin.style.top = newCoords.y + 'px';
+      mainPin.style.left = newCoords.x + 'px';
+      setAddressField();
     }
 
-    function onMouseUp(dragEvt) {
-      dragEvt.preventDefault();
+    function onMouseUp() {
       mainPin.removeEventListener('mousemove', onMouseMove);
       mainPin.removeEventListener('mouseup', onMouseUp);
-      addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
-
-      if (dragged) {
-        function onClickPreventDefault() {
-          mainPin.removeEventListener('click', onClickPreventDefault);
-        }
-        mainPin.addEventListener('click', onClickPreventDefault);
-      }
+      setAddressField();
     }
 
     mainPin.addEventListener('mousemove', onMouseMove);
