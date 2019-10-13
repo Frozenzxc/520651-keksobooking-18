@@ -280,3 +280,4 @@ checkinTime.addEventListener('change', function () {
 checkoutTime.addEventListener('change', function () {
   checkinTime.value = checkoutTime.value;
 });
+
