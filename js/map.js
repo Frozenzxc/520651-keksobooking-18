@@ -21,9 +21,9 @@
 
   addressField.value = '' + (mainPin.offsetLeft + MAINPIN_DIAMETER / 2) + ', ' + (mainPin.offsetTop + MAINPIN_DIAMETER / 2);
 
-  mainPin.addEventListener('mousedown', function () {
+  mainPin.addEventListener('mousedown', function (evt) {
     window.activatePage();
-    addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
+    dragPin(evt);
   });
 
   mainPin.addEventListener('keydown', function (evt) {
@@ -31,4 +31,50 @@
       window.activatePage();
     }
   });
+
+  function dragPin(evt) {
+    evt.preventDefault();
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var dragged = false;
+
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+      dragged = true;
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+
+    }
+
+    function onMouseUp(dragEvt) {
+      dragEvt.preventDefault();
+      mainPin.removeEventListener('mousemove', onMouseMove);
+      mainPin.removeEventListener('mouseup', onMouseUp);
+      addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
+
+      if (dragged) {
+        function onClickPreventDefault() {
+          mainPin.removeEventListener('click', onClickPreventDefault);
+        }
+        mainPin.addEventListener('click', onClickPreventDefault);
+      }
+    }
+
+    mainPin.addEventListener('mousemove', onMouseMove);
+    mainPin.addEventListener('mouseup', onMouseUp);
+  }
 })();
