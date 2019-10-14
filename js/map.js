@@ -11,7 +11,7 @@
   var mapWidth = map.offsetWidth;
   var limits = {
     top: 130,
-    right: mapWidth,
+    right: mapWidth - window.util.PIN_WIDTH,
     bottom: 600,
     left: 0
   };
@@ -65,7 +65,7 @@
       };
       if (newCoords.x > limits.right) {
         newCoords.x = limits.right;
-      } else if (newCoords < limits.left) {
+      } else if (newCoords.x < limits.left) {
         newCoords.x = limits.left;
       }
       if (newCoords.y < limits.top) {
@@ -80,12 +80,12 @@
     }
 
     function onMouseUp() {
-      mainPin.removeEventListener('mousemove', onMouseMove);
-      mainPin.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
       setAddressField();
     }
 
-    mainPin.addEventListener('mousemove', onMouseMove);
-    mainPin.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 })();
