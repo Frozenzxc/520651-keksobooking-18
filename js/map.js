@@ -8,6 +8,13 @@
   var MAINPIN_DIAMETER = 100;
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
+  var mapWidth = map.offsetWidth;
+  var limits = {
+    top: 130,
+    right: mapWidth - window.util.PIN_WIDTH,
+    bottom: 600,
+    left: 0
+  };
 
   window.activatePage = function () {
     map.classList.remove('map--faded');
@@ -21,9 +28,9 @@
 
   addressField.value = '' + (mainPin.offsetLeft + MAINPIN_DIAMETER / 2) + ', ' + (mainPin.offsetTop + MAINPIN_DIAMETER / 2);
 
-  mainPin.addEventListener('mousedown', function () {
+  mainPin.addEventListener('mousedown', function (evt) {
     window.activatePage();
-    addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
+    dragPin(evt);
   });
 
   mainPin.addEventListener('keydown', function (evt) {
@@ -31,4 +38,54 @@
       window.activatePage();
     }
   });
+
+  function setAddressField() {
+    addressField.value = '' + (mainPin.offsetLeft + window.util.PIN_WIDTH / 2) + ', ' + (mainPin.offsetTop + window.util.PIN_HEIGHT);
+  }
+
+  function dragPin(evt) {
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+    function onMouseMove(moveEvt) {
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var newCoords = {
+        x: mainPin.offsetLeft - shift.x,
+        y: mainPin.offsetTop - shift.y
+      };
+      if (newCoords.x > limits.right) {
+        newCoords.x = limits.right;
+      } else if (newCoords.x < limits.left) {
+        newCoords.x = limits.left;
+      }
+      if (newCoords.y < limits.top) {
+        newCoords.y = limits.top;
+      } else if (newCoords.y > limits.bottom) {
+        newCoords.y = limits.bottom;
+      }
+
+      mainPin.style.top = newCoords.y + 'px';
+      mainPin.style.left = newCoords.x + 'px';
+      setAddressField();
+    }
+
+    function onMouseUp() {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      setAddressField();
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
 })();
