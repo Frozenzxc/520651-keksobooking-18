@@ -22,9 +22,6 @@
     adForm.classList.remove('ad-form--disabled');
     window.form.activateForm(filterForm);
     window.form.activateForm(adForm);
-    /*window.hotelData.forEach(function (item) {
-      pins.appendChild(window.pin.renderPin(item));
-    });*/
   };
 
   addressField.value = '' + (mainPin.offsetLeft + MAINPIN_DIAMETER / 2) + ', ' + (mainPin.offsetTop + MAINPIN_DIAMETER / 2);
