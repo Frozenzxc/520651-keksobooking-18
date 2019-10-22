@@ -8,6 +8,7 @@
   var MAINPIN_DIAMETER = 100;
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
+  var errTemplate = document.querySelector('#error').content.querySelector('div');
   var mapWidth = map.offsetWidth;
   var limits = {
     top: 130,
@@ -21,9 +22,6 @@
     adForm.classList.remove('ad-form--disabled');
     window.form.activateForm(filterForm);
     window.form.activateForm(adForm);
-    window.hotelData.forEach(function (item) {
-      pins.appendChild(window.pin.renderPin(item));
-    });
   };
 
   addressField.value = '' + (mainPin.offsetLeft + MAINPIN_DIAMETER / 2) + ', ' + (mainPin.offsetTop + MAINPIN_DIAMETER / 2);
@@ -88,4 +86,19 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }
+
+  function onLoad(data) {
+    data.forEach(function (item) {
+      pins.appendChild(window.pin.renderPin(item));
+    });
+  }
+
+  function onError() {
+    var element = errTemplate.cloneNode(true);
+    element.style.zIndex = '1000';
+    document.body.append(element);
+  }
+
+  window.backend.load(onLoad, onError);
+
 })();
