@@ -1,8 +1,17 @@
 'use strict';
 
 (function () {
+  var PINS_COUNT = 5;
   var pins = document.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('button');
+  var mainPin = document.querySelector('.map__pin--main');
+
+  function removePins() {
+    pins.querySelectorAll('.map__pin').forEach(function (elm) {
+      pins.removeChild(elm);
+    });
+    pins.appendChild(mainPin);
+  }
 
   function renderPin(obj) {
     var element = template.cloneNode(true);
@@ -26,7 +35,17 @@
     return element;
   }
 
+  function render(data) {
+    var takeNumber = data.length > PINS_COUNT ? PINS_COUNT : data.length;
+    window.pin.removePins();
+    for (var i = 0; i < takeNumber; i++) {
+      pins.appendChild(window.pin.renderPin(data[i]));
+    }
+  }
+
   window.pin = {
-    renderPin: renderPin
+    removePins: removePins,
+    renderPin: renderPin,
+    render: render
   };
 })();
