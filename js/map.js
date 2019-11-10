@@ -9,6 +9,7 @@
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
   var mapWidth = map.offsetWidth;
+  var errTemplate = document.querySelector('#error').content.querySelector('.error');
   var limits = {
     top: 130,
     right: mapWidth - window.util.PIN_WIDTH,
@@ -24,7 +25,7 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.form.activateForm(filterForm);
-    window.filter.updatePins();
+    window.backend.load(onLoad, onError);
   };
 
   function resetPage() {
@@ -106,6 +107,17 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  }
+
+  function onLoad(data) {
+    window.data = data;
+    window.pin.render(data);
+  }
+
+  function onError() {
+    var element = errTemplate.cloneNode(true);
+    element.style.zIndex = '1000';
+    document.querySelector('main').append(element);
   }
 
   window.map = {

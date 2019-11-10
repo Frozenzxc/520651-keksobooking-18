@@ -3,7 +3,7 @@
 (function () {
   var housingType = ['flat', 'bungalo', 'house', 'palace'];
   var TYPE_TRANSLATE = ['Квартира', 'Бунгало', 'Дом', 'Дворец'];
-  var cardTemplate = document.querySelector('#card').content.querySelector('article');
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var pins = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
 

@@ -3,7 +3,7 @@
 (function () {
   var PINS_COUNT = 5;
   var pins = document.querySelector('.map__pins');
-  var template = document.querySelector('#pin').content.querySelector('button');
+  var template = document.querySelector('#pin').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
 
   function removePins() {

@@ -9,8 +9,8 @@
   var hotelPrice = document.querySelector('#price');
   var checkinTime = document.querySelector('#timein');
   var checkoutTime = document.querySelector('#timeout');
-  var successTemplate = document.querySelector('#success').content.querySelector('div');
-  var errTemplate = document.querySelector('#error').content.querySelector('div');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var errTemplate = document.querySelector('#error').content.querySelector('.error');
   var roomsValue = {
     1: [1],
     2: [1, 2],
