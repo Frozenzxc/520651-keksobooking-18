@@ -8,8 +8,8 @@
   var MAINPIN_DIAMETER = 100;
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
-  var errTemplate = document.querySelector('#error').content.querySelector('div');
   var mapWidth = map.offsetWidth;
+  var errTemplate = document.querySelector('#error').content.querySelector('.error');
   var limits = {
     top: 130,
     right: mapWidth - window.util.PIN_WIDTH,
@@ -38,13 +38,10 @@
     window.form.deactivateForm(adForm);
     filterForm.reset();
     adForm.reset();
-    pins.querySelectorAll('.map__pin').forEach(function (elm) {
-      pins.removeChild(elm);
-    });
+    window.pin.removePins();
     if (card) {
       pins.removeChild(card);
     }
-    pins.appendChild(mainPin);
     mainPin.style.left = mainPinStartCoords.x;
     mainPin.style.top = mainPinStartCoords.y;
     setAddressField();
@@ -114,9 +111,8 @@
   }
 
   function onLoad(data) {
-    data.forEach(function (item) {
-      pins.appendChild(window.pin.renderPin(item));
-    });
+    window.data = data;
+    window.pin.render(data);
   }
 
   function onError() {
