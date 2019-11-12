@@ -3,11 +3,14 @@
 (function () {
   var housingType = document.querySelector('#housing-type');
   function updatePins() {
-    var sameTypePins = window.data.filter(function (it) {
-      return it.offer.type === housingType.value;
-    });
+    var pinsData = window.data;
+    if (housingType.value !== 'any') {
+      pinsData = window.data.filter(function (it) {
+        return it.offer.type === housingType.value;
+      });
+    }
 
-    window.pin.render(sameTypePins);
+    window.pin.render(pinsData);
   }
 
   housingType.addEventListener('change', function () {

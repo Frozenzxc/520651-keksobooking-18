@@ -25,6 +25,7 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.form.activateForm(filterForm);
+    window.form.activateForm(adForm);
     window.backend.load(onLoad, onError);
   };
 
