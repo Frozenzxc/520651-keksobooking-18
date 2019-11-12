@@ -97,23 +97,12 @@
     checkinTime.value = checkoutTime.value;
   });
 
-  function popupMsgCloseHandler(elm) {
-    elm.addEventListener('click', function () {
-      elm.parentNode.removeChild(elm);
-    });
-    document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.util.ESC_KEYCODE) {
-        elm.parentNode.removeChild(elm);
-      }
-    });
-  }
-
   function onSuccess() {
     var element = successTemplate.cloneNode(true);
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
     window.map.resetPage();
-    popupMsgCloseHandler(element);
+    window.util.popupMsgCloseHandler(element);
   }
 
   function onError() {
@@ -121,7 +110,7 @@
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
     window.map.resetPage();
-    popupMsgCloseHandler(element);
+    window.util.popupMsgCloseHandler(element);
   }
 
   adForm.addEventListener('submit', function (evt) {

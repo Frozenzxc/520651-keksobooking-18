@@ -18,7 +18,7 @@
     element.querySelector('.popup__text--address').textContent = obj.offer.address;
     element.querySelector('.popup__text--price').textContent = obj.offer.price + '₽/ночь';
     element.querySelector('.popup__type').textContent = TYPE_TRANSLATE[housingType.indexOf(obj.offer.type)];
-    element.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.rooms + ' гостей';
+    element.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.guests + ' гостей';
     element.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
 
     for (var i = 0; i < obj.offer.features.length; i++) {
