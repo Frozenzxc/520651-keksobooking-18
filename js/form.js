@@ -67,7 +67,7 @@
   }
 
   photoPreviewReset.addEventListener('click', function () {
-    previewPhoto.innerHTML = '';
+    window.map.resetPage();
   });
 
   function disableOptions(evt) {

@@ -6,14 +6,13 @@
   var pins = document.querySelector('.map__pins');
   var filterForm = document.querySelector('.map__filters');
   var MAINPIN_DIAMETER = 100;
-  var MAINPIN_WIDTH = 65;
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
   var mapWidth = map.offsetWidth;
   var errTemplate = document.querySelector('#error').content.querySelector('.error');
   var limits = {
     top: 130,
-    right: mapWidth - MAINPIN_WIDTH,
+    right: mapWidth - window.util.PIN_WIDTH,
     bottom: 600,
     left: 0
   };
