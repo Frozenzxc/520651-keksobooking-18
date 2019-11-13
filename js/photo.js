@@ -21,6 +21,8 @@
       reader.addEventListener('load', function () {
         var photo = document.createElement('img');
         photo.src = reader.result;
+        photo.width = '70';
+        photo.height = '70';
         preview.appendChild(photo);
       });
 

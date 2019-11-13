@@ -44,6 +44,11 @@
   function deactivateForm(form) {
     var selects = form.querySelectorAll('select');
     var fieldsets = form.querySelectorAll('fieldset');
+    var previewPhoto = document.querySelector('.ad-form__photo');
+    var previewAvatar = document.querySelector('.ad-form-header__preview').querySelector('img');
+
+    previewAvatar.src = 'img/muffin-grey.svg';
+    previewPhoto.innerHTML = '';
 
     if (selects) {
       selects.forEach(function (item) {
