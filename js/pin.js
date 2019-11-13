@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var PINS_COUNT = 5;
   var pins = document.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
@@ -36,11 +35,9 @@
   }
 
   function render(data) {
-    var takeNumber = data.length > PINS_COUNT ? PINS_COUNT : data.length;
-    window.pin.removePins();
-    for (var i = 0; i < takeNumber; i++) {
-      pins.appendChild(window.pin.renderPin(data[i]));
-    }
+    data.forEach(function (it) {
+      pins.appendChild(window.pin.renderPin(it));
+    });
   }
 
   window.pin = {

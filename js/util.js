@@ -21,6 +21,17 @@
         result[i] = data[i];
       }
       return result;
+    },
+
+    popupMsgCloseHandler: function (elm) {
+      elm.addEventListener('click', function () {
+        elm.parentNode.removeChild(elm);
+      });
+      document.addEventListener('keydown', function (evt) {
+        if (evt.keyCode === window.util.ESC_KEYCODE) {
+          elm.parentNode.removeChild(elm);
+        }
+      });
     }
   };
 })();

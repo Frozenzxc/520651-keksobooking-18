@@ -112,13 +112,14 @@
 
   function onLoad(data) {
     window.data = data;
-    window.pin.render(data);
+    window.pin.render(window.filter.updatePins(window.data));
   }
 
   function onError() {
     var element = errTemplate.cloneNode(true);
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
+    window.util.popupMsgCloseHandler(element);
   }
 
   window.map = {
