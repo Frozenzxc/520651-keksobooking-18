@@ -36,7 +36,9 @@
 
   function render(data) {
     data.forEach(function (it) {
-      pins.appendChild(window.pin.renderPin(it));
+      if ('offer' in it) {
+        pins.appendChild(window.pin.renderPin(it));
+      }
     });
   }
 

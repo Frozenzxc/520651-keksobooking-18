@@ -11,6 +11,9 @@
   var checkoutTime = document.querySelector('#timeout');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var errTemplate = document.querySelector('#error').content.querySelector('.error');
+  var photoPreviewReset = document.querySelector('.ad-form__reset');
+  var previewPhoto = document.querySelector('.ad-form__photo');
+  var previewAvatar = document.querySelector('.ad-form-header__preview').querySelector('img');
   var roomsValue = {
     1: [1],
     2: [1, 2],
@@ -39,11 +42,16 @@
         item.disabled = false;
       });
     }
+
+    disableOptions();
   }
 
   function deactivateForm(form) {
     var selects = form.querySelectorAll('select');
     var fieldsets = form.querySelectorAll('fieldset');
+
+    previewAvatar.src = 'img/muffin-grey.svg';
+    previewPhoto.innerHTML = '';
 
     if (selects) {
       selects.forEach(function (item) {
@@ -57,6 +65,10 @@
       });
     }
   }
+
+  photoPreviewReset.addEventListener('click', function () {
+    window.map.resetPage();
+  });
 
   function disableOptions(evt) {
     var value = room.value;
@@ -75,8 +87,6 @@
       });
     });
   }
-
-  disableOptions();
 
   room.addEventListener('change', disableOptions);
 

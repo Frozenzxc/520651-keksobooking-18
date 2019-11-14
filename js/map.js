@@ -16,10 +16,11 @@
     bottom: 600,
     left: 0
   };
-  var mainPinStartCoords = {
-    x: mainPin.style.left,
-    y: mainPin.style.top
+  var Coordinate = function (x, y) {
+    this.x = x;
+    this.y = y;
   };
+  var mainPinStartCoords = new Coordinate(mainPin.style.left, mainPin.style.top);
 
   window.activatePage = function () {
     map.classList.remove('map--faded');
@@ -65,25 +66,15 @@
   }
 
   function dragPin(evt) {
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+    var startCoords = new Coordinate(evt.clientX, evt.clientY);
+
     function onMouseMove(moveEvt) {
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
+      var shift = new Coordinate(startCoords.x - moveEvt.clientX, startCoords.y - moveEvt.clientY);
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY);
 
-      var newCoords = {
-        x: mainPin.offsetLeft - shift.x,
-        y: mainPin.offsetTop - shift.y
-      };
+      var newCoords = new Coordinate(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y);
+
       if (newCoords.x > limits.right) {
         newCoords.x = limits.right;
       } else if (newCoords.x < limits.left) {

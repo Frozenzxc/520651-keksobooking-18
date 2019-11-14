@@ -4,8 +4,8 @@
   window.util = {
     ESC_KEYCODE: 27,
     ENTER_KEYCODE: 13,
-    PIN_WIDTH: 50,
-    PIN_HEIGHT: 70,
+    PIN_WIDTH: 66,
+    PIN_HEIGHT: 72,
     getRandomInt: function (min, max) {
       return Math.floor(min + Math.random() * (max + 1 - min));
     },
