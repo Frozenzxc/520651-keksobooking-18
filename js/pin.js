@@ -12,6 +12,14 @@
     pins.appendChild(mainPin);
   }
 
+  function activatePin(pin) {
+    var activePin = pins.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+    pin.classList.add('map__pin--active');
+  }
+
   function renderPin(obj) {
     var element = template.cloneNode(true);
     element.style.left = '' + (obj.location.x - window.util.PIN_WIDTH / 2) + 'px';
@@ -21,14 +29,16 @@
     element.tabIndex = 0;
 
     element.addEventListener('click', function () {
-      window.card.cardCloseHandler();
-      pins.appendChild(window.card.renderCard(obj));
+      activatePin(element);
+      window.card.close();
+      pins.appendChild(window.card.render(obj));
     });
 
     element.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.util.ENTER_KEYCODE) {
-        window.card.cardCloseHandler();
-        pins.appendChild(window.card.renderCard(obj));
+        activatePin(element);
+        window.card.close();
+        pins.appendChild(window.card.render(obj));
       }
     });
     return element;

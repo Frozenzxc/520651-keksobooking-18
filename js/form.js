@@ -10,10 +10,9 @@
   var checkinTime = document.querySelector('#timein');
   var checkoutTime = document.querySelector('#timeout');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
-  var errTemplate = document.querySelector('#error').content.querySelector('.error');
   var photoPreviewReset = document.querySelector('.ad-form__reset');
-  var previewPhoto = document.querySelector('.ad-form__photo');
-  var previewAvatar = document.querySelector('.ad-form-header__preview').querySelector('img');
+  var photoPreview = document.querySelector('.ad-form__photo');
+  var avatarPreview = document.querySelector('.ad-form-header__preview').querySelector('img');
   var roomsValue = {
     1: [1],
     2: [1, 2],
@@ -31,17 +30,13 @@
     var selects = form.querySelectorAll('select');
     var fieldsets = form.querySelectorAll('fieldset');
 
-    if (selects) {
-      selects.forEach(function (item) {
-        item.disabled = false;
-      });
-    }
+    selects.forEach(function (item) {
+      item.disabled = false;
+    });
 
-    if (fieldsets) {
-      fieldsets.forEach(function (item) {
-        item.disabled = false;
-      });
-    }
+    fieldsets.forEach(function (item) {
+      item.disabled = false;
+    });
 
     disableOptions();
   }
@@ -50,20 +45,16 @@
     var selects = form.querySelectorAll('select');
     var fieldsets = form.querySelectorAll('fieldset');
 
-    previewAvatar.src = 'img/muffin-grey.svg';
-    previewPhoto.innerHTML = '';
+    avatarPreview.src = 'img/muffin-grey.svg';
+    photoPreview.innerHTML = '';
 
-    if (selects) {
-      selects.forEach(function (item) {
-        item.disabled = true;
-      });
-    }
+    selects.forEach(function (item) {
+      item.disabled = true;
+    });
 
-    if (fieldsets) {
-      fieldsets.forEach(function (item) {
-        item.disabled = true;
-      });
-    }
+    fieldsets.forEach(function (item) {
+      item.disabled = true;
+    });
   }
 
   photoPreviewReset.addEventListener('click', function () {
@@ -88,16 +79,18 @@
     });
   }
 
-  room.addEventListener('change', disableOptions);
+  room.addEventListener('change', function () {
+    disableOptions();
+  });
 
-  function onChangeHotelType() {
+  function changeHotelType() {
     hotelPrice.min = hotelValues[hotelType.value];
     hotelPrice.placeholder = hotelValues[hotelType.value];
   }
 
-  onChangeHotelType();
+  changeHotelType();
 
-  hotelType.addEventListener('change', onChangeHotelType);
+  hotelType.addEventListener('change', changeHotelType);
 
   checkinTime.addEventListener('change', function () {
     checkoutTime.value = checkinTime.value;
@@ -108,38 +101,18 @@
   });
 
   function onSuccess() {
+    var main = document.querySelector('main');
     var element = successTemplate.cloneNode(true);
     element.style.zIndex = '1000';
-    document.querySelector('main').append(element);
+    main.append(element);
 
     element.addEventListener('click', function () {
-      document.querySelector('main').removeChild(element);
+      main.removeChild(element);
     });
 
     function onEscPressPopupClose(evt) {
       if (evt.keyCode === window.util.ESC_KEYCODE) {
-        document.querySelector('main').removeChild(element);
-      }
-      document.removeEventListener('keydown', onEscPressPopupClose);
-    }
-
-    document.addEventListener('keydown', onEscPressPopupClose);
-
-    window.map.resetPage();
-  }
-
-  function onError() {
-    var element = errTemplate.cloneNode(true);
-    element.style.zIndex = '1000';
-    document.querySelector('main').append(element);
-
-    element.addEventListener('click', function () {
-      document.querySelector('main').removeChild(element);
-    });
-
-    function onEscPressPopupClose(evt) {
-      if (evt.keyCode === window.util.ESC_KEYCODE) {
-        document.querySelector('main').removeChild(element);
+        main.removeChild(element);
       }
       document.removeEventListener('keydown', onEscPressPopupClose);
     }
@@ -150,12 +123,12 @@
   }
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(adForm), onSuccess, onError);
+    window.backend.upload(onSuccess, window.backend.onError, new FormData(adForm));
     evt.preventDefault();
   });
 
   window.form = {
-    activateForm: activateForm,
-    deactivateForm: deactivateForm
+    activate: activateForm,
+    deactivate: deactivateForm
   };
 })();

@@ -9,8 +9,7 @@
   var mainPin = document.querySelector('.map__pin--main');
   var addressField = document.querySelector('#address');
   var mapWidth = map.offsetWidth;
-  var errTemplate = document.querySelector('#error').content.querySelector('.error');
-  var limits = {
+  var Limits = {
     top: 130,
     right: mapWidth - window.util.PIN_WIDTH,
     bottom: 600,
@@ -25,9 +24,8 @@
   window.activatePage = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    window.form.activateForm(filterForm);
-    window.form.activateForm(adForm);
-    window.backend.load(onLoad, onError);
+    window.form.activate(adForm);
+    window.backend.load(onLoad, window.backend.onError);
   };
 
   function resetPage() {
@@ -35,8 +33,8 @@
 
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    window.form.deactivateForm(filterForm);
-    window.form.deactivateForm(adForm);
+    window.form.deactivate(filterForm);
+    window.form.deactivate(adForm);
     filterForm.reset();
     adForm.reset();
     window.pin.removePins();
@@ -75,15 +73,15 @@
 
       var newCoords = new Coordinate(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y);
 
-      if (newCoords.x > limits.right) {
-        newCoords.x = limits.right;
-      } else if (newCoords.x < limits.left) {
-        newCoords.x = limits.left;
+      if (newCoords.x > Limits.right) {
+        newCoords.x = Limits.right;
+      } else if (newCoords.x < Limits.left) {
+        newCoords.x = Limits.left;
       }
-      if (newCoords.y < limits.top) {
-        newCoords.y = limits.top;
-      } else if (newCoords.y > limits.bottom) {
-        newCoords.y = limits.bottom;
+      if (newCoords.y < Limits.top) {
+        newCoords.y = Limits.top;
+      } else if (newCoords.y > Limits.bottom) {
+        newCoords.y = Limits.bottom;
       }
 
       mainPin.style.top = newCoords.y + 'px';
@@ -104,25 +102,7 @@
   function onLoad(data) {
     window.data = data;
     window.pin.render(window.filter.updatePins(window.data));
-  }
-
-  function onError() {
-    var element = errTemplate.cloneNode(true);
-    element.style.zIndex = '1000';
-    document.querySelector('main').append(element);
-
-    element.addEventListener('click', function () {
-      document.querySelector('main').removeChild(element);
-    });
-
-    function onEscPressPopupClose(evt) {
-      if (evt.keyCode === window.util.ESC_KEYCODE) {
-        document.querySelector('main').removeChild(element);
-      }
-      document.removeEventListener('keydown', onEscPressPopupClose);
-    }
-
-    document.addEventListener('keydown', onEscPressPopupClose);
+    window.form.activate(filterForm);
   }
 
   window.map = {

@@ -22,9 +22,8 @@
       return obj.offer.price < MIN_PRICE;
     } else if (housingPrice.value === 'high') {
       return obj.offer.price > MAX_PRICE;
-    } else {
-      return obj.offer.price >= MIN_PRICE && obj.offer.price <= MAX_PRICE;
     }
+    return obj.offer.price >= MIN_PRICE && obj.offer.price <= MAX_PRICE;
   }
 
   function getHousingRooms(obj) {
@@ -57,7 +56,7 @@
 
   function filterChangeHandler() {
     window.pin.removePins();
-    window.card.cardCloseHandler();
+    window.card.close();
     window.pin.render(window.filter.updatePins(window.data));
   }
 
