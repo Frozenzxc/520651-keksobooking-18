@@ -110,7 +110,19 @@
     var element = errTemplate.cloneNode(true);
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
-    window.util.popupMsgCloseHandler(element);
+
+    element.addEventListener('click', function () {
+      document.querySelector('main').removeChild(element);
+    });
+
+    function onEscPressPopupClose(evt) {
+      if (evt.keyCode === window.util.ESC_KEYCODE) {
+        document.querySelector('main').removeChild(element);
+      }
+      document.removeEventListener('keydown', onEscPressPopupClose);
+    }
+
+    document.addEventListener('keydown', onEscPressPopupClose);
   }
 
   window.map = {

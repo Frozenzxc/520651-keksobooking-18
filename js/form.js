@@ -111,16 +111,42 @@
     var element = successTemplate.cloneNode(true);
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
+
+    element.addEventListener('click', function () {
+      document.querySelector('main').removeChild(element);
+    });
+
+    function onEscPressPopupClose(evt) {
+      if (evt.keyCode === window.util.ESC_KEYCODE) {
+        document.querySelector('main').removeChild(element);
+      }
+      document.removeEventListener('keydown', onEscPressPopupClose);
+    }
+
+    document.addEventListener('keydown', onEscPressPopupClose);
+
     window.map.resetPage();
-    window.util.popupMsgCloseHandler(element);
   }
 
   function onError() {
     var element = errTemplate.cloneNode(true);
     element.style.zIndex = '1000';
     document.querySelector('main').append(element);
+
+    element.addEventListener('click', function () {
+      document.querySelector('main').removeChild(element);
+    });
+
+    function onEscPressPopupClose(evt) {
+      if (evt.keyCode === window.util.ESC_KEYCODE) {
+        document.querySelector('main').removeChild(element);
+      }
+      document.removeEventListener('keydown', onEscPressPopupClose);
+    }
+
+    document.addEventListener('keydown', onEscPressPopupClose);
+
     window.map.resetPage();
-    window.util.popupMsgCloseHandler(element);
   }
 
   adForm.addEventListener('submit', function (evt) {
